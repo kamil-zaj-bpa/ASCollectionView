@@ -14,6 +14,12 @@ A SwiftUI implementation of UICollectionView & UITableView. Here's some of its u
  * supports **removing separators** for ASTableView.
  * supports directly using **FetchedResults** as a data source
 
+## A note if able to target iOS 16 or higher
+- It is worth seeing if native SwiftUI layouts fit your purpose
+ (eg. If you're laying out simple views and not making use of complex collection view behaviours)
+- We've started a small <a href="https://github.com/apptekstudios/SwiftUILayouts">library of native layouts here</a>
+
+
 ### Pull requests and suggestions welcome :)
 <a href="https://github.com/apptekstudios/ASCollectionView/issues">Report Bug</a>  ·  <a href="https://github.com/apptekstudios/ASCollectionView/issues">Suggest a feature</a>
 
