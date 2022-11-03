@@ -1,11 +1,16 @@
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
-![Build status](https://github.com/apptekstudios/ASCollectionView/workflows/Build/badge.svg?branch=master)
 
 # ASCollectionView
+
+## This repository is no longer maintained. Here's why:
+- with the release of iOS 16 SwiftUI now enables most of the features this library was created to replace.
+- The UIHostingConfiguration API makes it easy to implement custom UICollectionViews using SwiftUI cells. This implementation handles cell-resizing and updates much better than a third party component is able to.
+- In cases where a collection view is overkill, the new SwiftUI Layout protocol is the better choice. We've started a small <a href="https://github.com/apptekstudios/SwiftUILayouts">library of native layouts here</a>
+
+
+
+
+
+## README:
 A SwiftUI implementation of UICollectionView & UITableView. Here's some of its useful features:
  * supports **preloading** and **onAppear/onDisappear**.
  * supports **cell selection**, with automatic support for SwiftUI editing mode.
@@ -14,10 +19,12 @@ A SwiftUI implementation of UICollectionView & UITableView. Here's some of its u
  * supports **removing separators** for ASTableView.
  * supports directly using **FetchedResults** as a data source
 
-## A note if able to target iOS 16 or higher
-- It is worth seeing if native SwiftUI layouts fit your purpose
- (eg. If you're laying out simple views and not making use of complex collection view behaviours)
-- We've started a small <a href="https://github.com/apptekstudios/SwiftUILayouts">library of native layouts here</a>
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![MIT License][license-shield]][license-url]
+![Build status](https://github.com/apptekstudios/ASCollectionView/workflows/Build/badge.svg?branch=master)
 
 
 ### Pull requests and suggestions welcome :)
