@@ -83,7 +83,7 @@ public class AS_CollectionViewController: UIViewController
 }
 
 @available(iOS 13.0, *)
-class AS_UICollectionView: UICollectionView
+class AS_UICollectionView: VerticalSwipesCollectionView
 {
 	weak var coordinator: ASCollectionViewCoordinator?
 	override func didMoveToWindow()
@@ -97,4 +97,15 @@ class AS_UICollectionView: UICollectionView
 			coordinator?.onMoveFromParent()
 		}
 	}
+}
+
+class VerticalSwipesCollectionView: UICollectionView, UIGestureRecognizerDelegate {
+    override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        if let panGesture = gestureRecognizer as? UIPanGestureRecognizer {
+            let velocity = panGesture.velocity(in: self)
+            // Only allow gestures with a stronger vertical component
+            return abs(velocity.y) > abs(velocity.x)
+        }
+        return super.gestureRecognizerShouldBegin(gestureRecognizer)
+    }
 }
