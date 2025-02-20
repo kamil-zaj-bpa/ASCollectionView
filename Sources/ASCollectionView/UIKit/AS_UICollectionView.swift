@@ -99,12 +99,13 @@ class AS_UICollectionView: VerticalSwipesCollectionView
 	}
 }
 
-class VerticalSwipesCollectionView: UICollectionView, UIGestureRecognizerDelegate {
+class VerticalCollectionView: UICollectionView, UIGestureRecognizerDelegate {
     override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         if let panGesture = gestureRecognizer as? UIPanGestureRecognizer {
             let velocity = panGesture.velocity(in: self)
-            // Only allow gestures with a stronger vertical component
-            return abs(velocity.y) > abs(velocity.x)
+            let y = abs(velocity.y)
+            let x = abs(velocity.x)
+            return y == 0 && x == 0 || y > x
         }
         return super.gestureRecognizerShouldBegin(gestureRecognizer)
     }
