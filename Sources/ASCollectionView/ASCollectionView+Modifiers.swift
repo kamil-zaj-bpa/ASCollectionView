@@ -83,6 +83,13 @@ public extension ASCollectionView
 		this.verticalScrollIndicatorEnabled = vertical
 		return this
 	}
+    
+    func isScrollEnabled(_ enabled: Bool) -> Self
+    {
+        var this = self
+        this.isScrolEnabled = enabled
+        return this
+    }
 
 	/// Set the content insets
 	func contentInsets(_ insets: UIEdgeInsets) -> Self
@@ -115,7 +122,14 @@ public extension ASCollectionView
 		this.onPullToRefresh = callback
 		return this
 	}
-
+    
+    func onCollectionViewInstantiated(callback: @escaping (UICollectionView) -> ()) -> Self {
+        var this = self
+        this.collectionViewInstance = callback
+        return this
+        
+    }
+    
 	/// Set whether the ASCollectionView should always allow bounce vertically
 	func alwaysBounceVertical(_ alwaysBounce: Bool = true) -> Self
 	{

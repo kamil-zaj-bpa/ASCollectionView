@@ -23,7 +23,7 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 	// MARK: Internal variables modified by modifier functions
 
 	internal var delegateInitialiser: (() -> ASCollectionViewDelegate) = ASCollectionViewDelegate.init
-
+    internal var collectionViewInstance: ((UICollectionView) -> ())?
 	internal var contentSizeTracker: ContentSizeTracker?
 
 	internal var onScrollCallback: OnScrollCallback?
@@ -34,7 +34,8 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 	internal var horizontalScrollIndicatorEnabled: Bool = true
 	internal var verticalScrollIndicatorEnabled: Bool = true
 	internal var contentInsets: UIEdgeInsets = .zero
-
+    internal var isScrolEnabled: Bool = true
+    
 	internal var onPullToRefresh: ((_ endRefreshing: @escaping (() -> Void)) -> Void)?
     
     internal var onWillDisplay: ((UICollectionViewCell, IndexPath) -> Void)?
@@ -79,7 +80,7 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 		context.coordinator.delegate = delegate
 
 		context.coordinator.setupDataSource(forCollectionView: collectionViewController.collectionView)
-
+        collectionViewInstance?(collectionViewController.collectionView)
 		return collectionViewController
 	}
 
@@ -196,6 +197,7 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 			assignIfChanged(collectionView, \.showsVerticalScrollIndicator, newValue: parent.verticalScrollIndicatorEnabled)
 			assignIfChanged(collectionView, \.showsHorizontalScrollIndicator, newValue: parent.horizontalScrollIndicatorEnabled)
 			assignIfChanged(collectionView, \.keyboardDismissMode, newValue: .interactive)
+            assignIfChanged(collectionView, \.isScrollEnabled, newValue: parent.isScrolEnabled)
 			updateCollectionViewContentInsets(collectionView)
 		}
 
