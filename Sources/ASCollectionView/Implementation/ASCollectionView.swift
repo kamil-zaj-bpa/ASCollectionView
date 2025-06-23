@@ -92,6 +92,7 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 		context.coordinator.updateLayout()
 		context.coordinator.configureRefreshControl(for: collectionViewController.collectionView)
 		context.coordinator.setupKeyboardObservers()
+        context.coordinator.applyScrollPosition(animated: nil)
 #if DEBUG
 		debugOnly_checkHasUniqueSections()
 #endif
@@ -503,11 +504,11 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 			CATransaction.commit()
 		}
 
-		func applyScrollPosition(animated: Bool)
+		func applyScrollPosition(animated: Bool?)
 		{
 			if let scrollPositionToSet = parent.scrollPositionSetter?.wrappedValue
 			{
-				scrollToPosition(scrollPositionToSet, animated: animated)
+                scrollToPosition(scrollPositionToSet, animated: animated ?? scrollPositionToSet.animated)
 				DispatchQueue.main.async
 				{
 					self.parent.scrollPositionSetter?.wrappedValue = nil
@@ -527,7 +528,7 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 			case .right:
 				guard let maxOffset = collectionViewController?.collectionView.maxContentOffset else { return }
 				collectionViewController?.collectionView.setContentOffset(.init(x: maxOffset.x, y: 0), animated: animated)
-			case let .indexPath(indexPath, positionOnScreen, extraOffset):
+			case let .indexPath(indexPath, positionOnScreen, extraOffset, animated):
 				collectionViewController?.collectionView.scrollToItem(at: indexPath, at: positionOnScreen, animated: animated)
 				collectionViewController?.collectionView.contentOffset.x += extraOffset.x
 				collectionViewController?.collectionView.contentOffset.y += extraOffset.y
@@ -1096,5 +1097,12 @@ public enum ASCollectionViewScrollPosition
 	case bottom
 	case left
 	case right
-	case indexPath(_: IndexPath, positionOnScreen: UICollectionView.ScrollPosition = .centeredVertically, extraOffset: CGPoint = .zero)
+    case indexPath(_: IndexPath, positionOnScreen: UICollectionView.ScrollPosition = .centeredVertically, extraOffset: CGPoint = .zero, animated: Bool = true)
+    
+    var animated: Bool {
+        switch self {
+        case .indexPath(_, _, _, let animated): animated
+        default: true
+        }
+    }
 }
