@@ -532,6 +532,8 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 				collectionViewController?.collectionView.scrollToItem(at: indexPath, at: positionOnScreen, animated: animated)
 				collectionViewController?.collectionView.contentOffset.x += extraOffset.x
 				collectionViewController?.collectionView.contentOffset.y += extraOffset.y
+            case .offset(let offset, let animated):
+                collectionViewController?.collectionView.setContentOffset(offset, animated: animated)
 			}
 		}
 
@@ -1098,10 +1100,12 @@ public enum ASCollectionViewScrollPosition
 	case left
 	case right
     case indexPath(_: IndexPath, positionOnScreen: UICollectionView.ScrollPosition = .centeredVertically, extraOffset: CGPoint = .zero, animated: Bool = true)
+    case offset(_ offset: CGPoint = .zero, animated: Bool = true)
     
     var animated: Bool {
         switch self {
         case .indexPath(_, _, _, let animated): animated
+        case .offset(_, let animated): animated
         default: true
         }
     }
