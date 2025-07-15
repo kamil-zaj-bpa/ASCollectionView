@@ -497,10 +497,24 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 
 		// MARK: Functions for determining scroll position (on appear, and also on orientation change)
 
-		func scrollToItem(indexPath: IndexPath, position: UICollectionView.ScrollPosition = [])
+		func scrollToItem(indexPath: IndexPath, position: UICollectionView.ScrollPosition = [], retryCount: Int = 0)
 		{
+			// Prevent infinite retry loops
+			guard retryCount < 10 else { return }
+			
+			// Safety check: ensure the collection view has sections and the indexPath is valid
+			guard let collectionView = collectionViewController?.collectionView,
+				  collectionView.numberOfSections > 0,
+				  indexPath.section < collectionView.numberOfSections,
+				  indexPath.item < collectionView.numberOfItems(inSection: indexPath.section) else {
+				// If validation fails, retry after a short delay
+				DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+					self?.scrollToItem(indexPath: indexPath, position: position, retryCount: retryCount + 1)
+				}
+				return
+			}
 			CATransaction.begin()
-			collectionViewController?.collectionView.scrollToItem(at: indexPath, at: position, animated: true)
+			collectionView.scrollToItem(at: indexPath, at: position, animated: true)
 			CATransaction.commit()
 		}
 
@@ -516,8 +530,11 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 			}
 		}
 
-		func scrollToPosition(_ scrollPosition: ASCollectionViewScrollPosition, animated: Bool = false)
+		func scrollToPosition(_ scrollPosition: ASCollectionViewScrollPosition, animated: Bool = false, retryCount: Int = 0)
 		{
+			// Prevent infinite retry loops
+			guard retryCount < 10 else { return }
+			
 			switch scrollPosition
 			{
 			case .top, .left:
@@ -529,9 +546,20 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 				guard let maxOffset = collectionViewController?.collectionView.maxContentOffset else { return }
 				collectionViewController?.collectionView.setContentOffset(.init(x: maxOffset.x, y: 0), animated: animated)
 			case let .indexPath(indexPath, positionOnScreen, extraOffset, animated):
-				collectionViewController?.collectionView.scrollToItem(at: indexPath, at: positionOnScreen, animated: animated)
-				collectionViewController?.collectionView.contentOffset.x += extraOffset.x
-				collectionViewController?.collectionView.contentOffset.y += extraOffset.y
+				// Safety check: ensure the collection view has sections and the indexPath is valid
+				guard let collectionView = collectionViewController?.collectionView,
+					  collectionView.numberOfSections > 0,
+					  indexPath.section < collectionView.numberOfSections,
+					  indexPath.item < collectionView.numberOfItems(inSection: indexPath.section) else {
+					// If validation fails, retry after a short delay
+					DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+						self?.scrollToPosition(scrollPosition, animated: animated, retryCount: retryCount + 1)
+					}
+					return
+				}
+				collectionView.scrollToItem(at: indexPath, at: positionOnScreen, animated: animated)
+				collectionView.contentOffset.x += extraOffset.x
+				collectionView.contentOffset.y += extraOffset.y
             case .offset(let offset, let animated):
                 collectionViewController?.collectionView.setContentOffset(offset, animated: animated)
 			}
@@ -584,6 +612,9 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 		{
 			guard
 				let collectionView = collectionViewController?.collectionView,
+				collectionView.numberOfSections > 0,
+				indexPath.section < collectionView.numberOfSections,
+				indexPath.item < collectionView.numberOfItems(inSection: indexPath.section),
 				let centerCellFrame = collectionView.layoutAttributesForItem(at: indexPath)?.frame
 			else { return nil }
 			let maxOffset = collectionView.maxContentOffset
