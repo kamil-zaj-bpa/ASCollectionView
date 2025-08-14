@@ -1026,7 +1026,7 @@ extension ASCollectionView.Coordinator
         parent.onScrollDidEndDraggingCallback?(collectionView, decelerate)
     }
     
-    func onWillAppear(_ collectionView: UICollectionView) {
+    func viewDidAppear(_ collectionView: UICollectionView) {
         parent.collectionViewInstance?(collectionView)
     }
 }
@@ -1075,7 +1075,7 @@ internal protocol ASCollectionViewCoordinator: AnyObject
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView)
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>)
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool)
-    func onWillAppear(_ collectionView: UICollectionView)
+    func viewDidAppear(_ collectionView: UICollectionView)
 }
 
 // MARK: Custom Prefetching Implementation
