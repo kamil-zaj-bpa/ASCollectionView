@@ -57,6 +57,30 @@ public extension ASCollectionView
 		this.onScrollCallback = onScroll
 		return this
 	}
+    
+    func onWillBeginDragging(callback: @escaping (UICollectionView) -> ()) -> Self {
+        var this = self
+        this.onScrollWillBeginDraggingCallback = callback
+        return this
+    }
+    
+    func onDidEndDecelerating(callback: @escaping (UICollectionView) -> ()) -> Self {
+        var this = self
+        this.onScrollDidEndDeceleratingCallback = callback
+        return this
+    }
+    
+    func onWillEndDragging(callback: @escaping OnScrollWillEndDraggingCallback) -> Self {
+        var this = self
+        this.onScrollWillEndDraggingCallback = callback
+        return this
+    }
+    
+    func onDidEndDragging(callback: @escaping OnScrollDidEndDraggingCallback) -> Self {
+        var this = self
+        this.onScrollDidEndDraggingCallback = callback
+        return this
+    }
 
 	/// Set a closure that is called whenever the collectionView is scrolled to a boundary. eg. the bottom.
 	/// This is useful to enable loading more data when scrolling to bottom

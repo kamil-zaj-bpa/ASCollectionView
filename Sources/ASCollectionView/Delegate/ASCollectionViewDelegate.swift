@@ -119,6 +119,22 @@ extension ASCollectionViewDelegate: UICollectionViewDragDelegate, UICollectionVi
 	{
 		coordinator?.scrollViewDidScroll(scrollView)
 	}
+    
+    open func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        coordinator?.scrollViewDidEndDragging(scrollView, willDecelerate: decelerate)
+    }
+    
+    open func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        coordinator?.scrollViewWillEndDragging(scrollView, withVelocity: velocity, targetContentOffset: targetContentOffset)
+    }
+    
+    open func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        coordinator?.scrollViewWillBeginDragging(scrollView)
+    }
+    
+    open func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        coordinator?.scrollViewDidEndDecelerating(scrollView)
+    }
 }
 
 @available(iOS 13.0, *)

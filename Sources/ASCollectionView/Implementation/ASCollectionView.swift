@@ -13,6 +13,8 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 
 	public typealias OnScrollCallback = ((_ contentOffset: CGPoint, _ contentSize: CGSize) -> Void)
 	public typealias OnReachedBoundaryCallback = ((_ boundary: Boundary) -> Void)
+    public typealias OnScrollDidEndDraggingCallback = ((_ scrollView: UICollectionView, _ decelerate: Bool) -> Void)
+    public typealias OnScrollWillEndDraggingCallback = ((_ scrollView: UICollectionView, _ velocity: CGPoint, _ targetContentOffset: UnsafeMutablePointer<CGPoint>) -> Void)
 
 	// MARK: Key variables
 
@@ -28,6 +30,10 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 
 	internal var onScrollCallback: OnScrollCallback?
 	internal var onReachedBoundaryCallback: OnReachedBoundaryCallback?
+    internal var onScrollDidEndDraggingCallback: OnScrollDidEndDraggingCallback?
+    internal var onScrollWillEndDraggingCallback: OnScrollWillEndDraggingCallback?
+    internal var onScrollWillBeginDraggingCallback: ((UICollectionView) -> Void)?
+    internal var onScrollDidEndDeceleratingCallback: ((UICollectionView) -> Void)?
 
 	internal var backgroundColor: UIColor?
 
@@ -1000,6 +1006,26 @@ extension ASCollectionView.Coordinator
 			}
 		}
 	}
+    
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        guard let collectionView = scrollView as? UICollectionView else { return }
+        parent.onScrollWillBeginDraggingCallback?(collectionView)
+    }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        guard let collectionView = scrollView as? UICollectionView else { return }
+        parent.onScrollDidEndDeceleratingCallback?(collectionView)
+    }
+    
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        guard let collectionView = scrollView as? UICollectionView else { return }
+        parent.onScrollWillEndDraggingCallback?(collectionView, velocity, targetContentOffset)
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        guard let collectionView = scrollView as? UICollectionView else { return }
+        parent.onScrollDidEndDraggingCallback?(collectionView, decelerate)
+    }
 }
 
 // MARK: Context Menu Support
@@ -1042,6 +1068,10 @@ internal protocol ASCollectionViewCoordinator: AnyObject
 	func scrollViewDidScroll(_ scrollView: UIScrollView)
 	func onMoveToParent()
 	func onMoveFromParent()
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView)
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView)
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>)
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool)
 }
 
 // MARK: Custom Prefetching Implementation
