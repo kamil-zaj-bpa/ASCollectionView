@@ -86,7 +86,6 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 		context.coordinator.delegate = delegate
 
 		context.coordinator.setupDataSource(forCollectionView: collectionViewController.collectionView)
-        collectionViewInstance?(collectionViewController.collectionView)
 		return collectionViewController
 	}
 
@@ -1026,6 +1025,10 @@ extension ASCollectionView.Coordinator
         guard let collectionView = scrollView as? UICollectionView else { return }
         parent.onScrollDidEndDraggingCallback?(collectionView, decelerate)
     }
+    
+    func onWillAppear(_ collectionView: UICollectionView) {
+        parent.collectionViewInstance?(collectionView)
+    }
 }
 
 // MARK: Context Menu Support
@@ -1072,6 +1075,7 @@ internal protocol ASCollectionViewCoordinator: AnyObject
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView)
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>)
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool)
+    func onWillAppear(_ collectionView: UICollectionView)
 }
 
 // MARK: Custom Prefetching Implementation

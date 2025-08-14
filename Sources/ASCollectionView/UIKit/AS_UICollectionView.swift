@@ -43,6 +43,11 @@ public class AS_CollectionViewController: UIViewController
 		super.viewDidLoad()
 		view.backgroundColor = .clear
 	}
+    
+    override public func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        coordinator?.onWillAppear(collectionView)
+    }
 
 	override public func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator)
 	{
